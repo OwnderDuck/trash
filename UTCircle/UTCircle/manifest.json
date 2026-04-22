@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "UTCircle",
+  "version": "1.0.1",
+  "description": "View UTC and your friends' local time instantly.",
+  "permissions": [
+    
+  ],
+  
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["style.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "author": "OwnderDuck",
+  "homepage_url": "https://github.com/your-repo-link",
+  "offline_enabled": true
+}

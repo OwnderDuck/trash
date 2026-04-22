@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+                :root {
+            /* 极致黑白配色系统 */
+            --bg-color: #000000;         /* 纯黑底 */
+            --panel-color: #0d0d0d;      /* 略浅的深黑面板 */
+            --text-main: #ffffff;        /* 纯白文字 */
+            --text-dim: #777777;         /* 灰色文字（用于陈旧记录） */
+            --border: #333333;           /* 细线分割 */
+            --accent: #ffffff;           /* 高亮色保持与文字统一，拒绝彩色 */
+        }
+
+        body {
+            margin: 0; padding: 20px;
+            font-family: 'Segoe UI', Inter, system-ui, sans-serif;
+            height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        header { 
+            width: 100%; display: flex; justify-content: space-between; 
+            padding-bottom: 20px; border-bottom: 1px solid var(--border);
+        }
+
+        header a, header select { color: var(--text-dim); font-size: 0.9em; text-decoration: none; }
+
+        /* 语言选择器：深度定制，去除原生外观 */
+        select {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%226%22%20viewBox%3D%220%200%2010%206%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M1%201L5%205L9%201%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.5%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+        }
+
+        main {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 20px;
+        }
+
+        h1 { font-weight: 200; letter-spacing: 4px; margin: 0; font-size: 2em; }
+        h2 { color: var(--text-dim); font-weight: 300; font-size: 1em; }
+
+        .settings { 
+            background: var(--panel-color); padding: 20px; 
+            border: 1px solid var(--border); width: 100%; max-width: 500px;
+        }
+
+        button {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--text-main);
+            padding: 10px 20px; cursor: pointer;
+            transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;
+        }
+        button:hover { background: var(--text-main); color: var(--bg-color); }
+
+        input[type="number"], input[type="range"] {
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            accent-color: var(--text-main);
+        }
+
+        #fileList {
+            width: 100%; max-width: 500px; height: 300px;
+            overflow-y: auto; border: 1px solid var(--border);
+            padding: 10px; margin-top: 20px; background: var(--panel-color);
+        }
+
+        #fileList li {
+            padding: 8px 0; border-bottom: 1px solid var(--border);
+            font-size: 0.85em; color: var(--text-dim);
+        }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--border); }
+    </style>
+</head>
+<body>
+
+<header>
+    <select onchange="changeLanguage(this.value)">
+        <option value="zh">中文 (ZH)</option>
+        <option value="en">English (EN)</option>
+    </select>
+    <a href="https://github.com/OwnderDuck/" style="color: var(--accent);">GitHub</a>
+</header>
+
+<main style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+    <h1>🪦 文件超度器</h1>
+    <p data-i18n="description">你的文件需要一场体面的告别</p>
+
+    <div class="settings">
+        <label data-i18n="yearsLabel">沉睡年限 (年): </label>
+        <input type="range" id="yearsRange" min="0" max="10" step="0.1" value="3.0" oninput="syncInputs(this.value)">
+        <input type="number" id="yearsNumber" min="0" max="10" step="0.1" value="3.0" oninput="syncInputs(this.value)" style="background:transparent; color:white; border:none; width:40px;">
+        <br><br>
+        <div style="display:flex; gap:10px;">
+            <button data-i18n="selectBtn" onclick="handleSelectClick()">选择文件夹</button>
+            <button data-i18n="scanBtn" onclick="handleScanClick()">开始深度扫描</button>
+        </div>
+    </div>
+
+    <div id="folder-path" style="margin-top:10px; color: var(--accent);">等待选择...</div>
+    <ul id="fileList"></ul>
+</main>
+<script>
+       // 1. 全局配置：直接在此定义，不要用 fetch
+    var textData = {
+        "fileMapping": {
+            "exe": "run", "bat": "run", "msi": "run", "com": "run",
+            "md": "text", "txt": "text", "docx": "text", "pdf": "text", "log": "text",
+            "jpg": "media", "png": "media", "mp4": "media", "gif": "media", "wav": "media",
+            "zip": "archive", "rar": "archive", "7z": "archive", "tar": "archive",
+            "py": "code", "cpp": "code", "js": "code", "html": "code", "java": "code"
+        },
+        "zh": {
+            "generic": ["${name} 沉睡了 ${days} 天，它似乎忘记了你。", "硬盘的角落里，${name} 已静止 ${days} 天。"],
+            "run": ["${name}，${days} 天了，谁还记得它曾运行的瞬间？", "沉睡在 {year} 年的 ${name}，也许该放手了。"],
+            "text": ["阅读 ${name} 的人早已离去，只剩它在此静默 ${days} 天。", "这是一份 ${days} 天前留下的笔记，${name}正等待被遗忘。"],
+            "media": ["${name} 里珍藏的画面，已在黑暗中守护了 ${days} 天。", "@${name}那是 ${days} 天前的色彩，此刻却已模糊不清。"],
+            "archive": ["重重压缩的 ${name}，锁住了 ${days} 天前的秘密。", "或许解开 ${name} 的封印，就是对 ${days} 天前最好的告别。"],
+            "code": ["${name} 的逻辑链条已断裂，它停止思考已有 ${days} 天。", "${name}，你的代码在 ${days} 天前失去了最后一次运行的机会。"]
+        }
+    };
+
+    const messages = {
+        'zh': { title: "文件超度器", description: "你的文件需要一场体面的告别", selectBtn: "选择文件夹", scanBtn: "开始深度扫描", waiting: "等待选择..." },
+        'en': { title: "File R.I.P.", description: "Say goodbye to your old files.", selectBtn: "Select Folder", scanBtn: "Start Deep Scan", waiting: "Waiting..." }
+    };
+
+    let currentLang = 'zh';
+
+// 逻辑部分
+    function syncInputs(val) {
+        document.getElementById('yearsRange').value = val;
+        document.getElementById('yearsNumber').value = val;
+    }
+
+    // 语言切换样式反馈
+    function changeLanguage(lang) {
+        currentLang = lang;
+        // 简单反馈：切换时让选择框闪烁一下
+        const sel = document.querySelector('select');
+        sel.style.borderColor = 'var(--accent)';
+        setTimeout(() => sel.style.borderColor = 'var(--border)', 500);     // 2. 所有逻辑函数必须定义在全局作用域
+    }
+    function handleSelectClick() {
+        window.select_folder("");
+    }
+
+    function handleScanClick() {
+        if (!currentSelectedPath) return alert("请先选择文件夹！");
+        const years = document.getElementById('yearsNumber').value;
+        document.getElementById('fileList').innerHTML = '';
+        window.do_scan(`${currentSelectedPath}|${years}`);
+    }
+
+    function getEulogy(name, year, days, lang, context) {
+        const pool = (textData[lang] && textData[lang][context]) ? textData[lang][context] : textData[lang]['generic'];
+        const template = pool[Math.floor(Math.random() * pool.length)];
+        return new Function('name', 'year', 'days', `return \`${template}\`;`)(name, year, days);
+    }
+
+    // 3. 后端回调
+    window.onFolderSelected = (path) => {
+        currentSelectedPath = path;
+        document.getElementById('folder-path').innerText = "当前路径: " + path;
+    };
+
+    window.renderGhostData = function(data) {
+        const ext = data.name.includes('.') ? data.name.split('.').pop().toLowerCase() : 'none';
+        const context = textData.fileMapping[ext] || 'generic';
+        const text = getEulogy(data.name, data.year, data.days, currentLang, context);
+
+        const li = document.createElement('li');
+        li.className = `eulogy-type-${context}`;
+        li.textContent = text;
+        document.getElementById('fileList').appendChild(li);
+    };
+</script>
+</body>
+</html>

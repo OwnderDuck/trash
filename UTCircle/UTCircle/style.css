@@ -1,0 +1,313 @@
+/* Copyright (c) 2025 OwnderDuck */
+/* SPDX-License-Identifier: MIT */
+
+:root {
+  /* ===== 暗色主题 ===== */
+  --clock-bg-dark: linear-gradient(135deg, rgba(25, 32, 50, 0.85), rgba(15, 20, 30, 0.85));
+  --clock-border-dark: rgba(80, 150, 255, 0.25);
+  --clock-glow-dark: rgba(80, 150, 255, 0.25);
+
+  --btn-bg-dark: linear-gradient(135deg, #5b8fff, #7a6bff);
+  --btn-bg-hover-dark: linear-gradient(135deg, #769eff, #9589ff);
+  --btn-text-dark: #ffffff;
+
+  --menu-bg-dark: rgba(25, 32, 50, 0.85);
+  --menu-border-dark: rgba(80, 150, 255, 0.15);
+
+  --hover-row-dark: rgba(80, 150, 255, 0.12);
+  --selected-row-dark: linear-gradient(135deg, rgba(91, 143, 255, 0.25), rgba(122, 107, 255, 0.25));
+  --selected-border-dark: #5b8fff;
+
+  --panel-plain-bg-dark: rgba(25, 32, 50, 0.9);      /* 例如添加联系人弹窗 */
+  --panel-plain-border-dark: rgba(80, 150, 255, 0.15);
+
+  --text-primary-dark: #f5f7ff;
+  --text-secondary-dark: rgba(245, 247, 255, 0.7);
+
+  --input-bg-dark: rgba(255, 255, 255, 0.06);
+  --input-border-dark: rgba(200, 200, 220, 0.6);
+  --input-border-hover-dark: rgba(200, 200, 220, 0.85);
+  --input-focus-dark: #5b8fff;
+
+  --danger-dark: #ff6b6b;
+
+  /* ===== 浅色主题 ===== */
+  --clock-bg-light: linear-gradient(135deg, rgba(250, 250, 250, 0.95), rgba(240, 240, 240, 0.95));
+  --clock-border-light: rgba(120, 120, 120, 0.15);
+  --clock-glow-light: rgba(120, 120, 120, 0.15);
+
+  --btn-bg-light: linear-gradient(135deg, #4a90e2, #6cc1ff);
+  --btn-bg-hover-light: linear-gradient(135deg, #5aa0f0, #7ad1ff);
+  --btn-text-light: #ffffff;
+
+  --menu-bg-light: rgba(255, 255, 255, 0.95);
+  --menu-border-light: rgba(0, 0, 0, 0.1);
+
+  --hover-row-light: rgba(0, 0, 0, 0.05);
+  --selected-row-light: linear-gradient(135deg, rgba(74, 144, 226, 0.15), rgba(108, 193, 255, 0.15));
+  --selected-border-light: #4a90e2;
+
+  --panel-plain-bg-light: #ffffff;
+  --panel-plain-border-light: rgba(0, 0, 0, 0.1);
+
+  --text-primary-light: #1f2a37;
+  --text-secondary-light: rgba(31, 42, 55, 0.66);
+
+  --input-bg-light: #ffffff;
+  --input-border-light: rgba(180, 180, 180, 0.6);
+  --input-border-hover-light: rgba(150, 150, 150, 0.9);
+  --input-focus-light: #4a90e2;
+
+  --danger-light: #d64545;
+}
+
+/* 默认暗色主题（别名映射） */
+body {
+  --clock-bg: var(--clock-bg-dark);
+  --clock-border: var(--clock-border-dark);
+  --clock-glow: var(--clock-glow-dark);
+
+  --btn-bg: var(--btn-bg-dark);
+  --btn-bg-hover: var(--btn-bg-hover-dark);
+  --btn-text: var(--btn-text-dark);
+
+  --menu-bg: var(--menu-bg-dark);
+  --menu-border: var(--menu-border-dark);
+
+  --hover-row: var(--hover-row-dark);
+  --selected-row: var(--selected-row-dark);
+  --selected-border: var(--selected-border-dark);
+
+  --panel-plain-bg: var(--panel-plain-bg-dark);
+  --panel-plain-border: var(--panel-plain-border-dark);
+
+  --text-primary: var(--text-primary-dark);
+  --text-secondary: var(--text-secondary-dark);
+
+  --input-bg: var(--input-bg-dark);
+  --input-border: var(--input-border-dark);
+  --input-border-hover: var(--input-border-hover-dark);
+  --input-focus: var(--input-focus-dark);
+
+  --danger: var(--danger-dark);
+}
+
+/* 浅色主题 */
+body.light-theme {
+  --clock-bg: var(--clock-bg-light);
+  --clock-border: var(--clock-border-light);
+  --clock-glow: var(--clock-glow-light);
+
+  --btn-bg: var(--btn-bg-light);
+  --btn-bg-hover: var(--btn-bg-hover-light);
+  --btn-text: var(--btn-text-light);
+
+  --menu-bg: var(--menu-bg-light);
+  --menu-border: var(--menu-border-light);
+
+  --hover-row: var(--hover-row-light);
+  --selected-row: var(--selected-row-light);
+  --selected-border: var(--selected-border-light);
+
+  --panel-plain-bg: var(--panel-plain-bg-light);
+  --panel-plain-border: var(--panel-plain-border-light);
+
+  --text-primary: var(--text-primary-light);
+  --text-secondary: var(--text-secondary-light);
+
+  --input-bg: var(--input-bg-light);
+  --input-border: var(--input-border-light);
+  --input-border-hover: var(--input-border-hover-light);
+  --input-focus: var(--input-focus-light);
+
+  --danger: var(--danger-light);
+}
+
+/* 主时钟面板 */
+/* 联系人菜单 */
+#utc-clock,
+#contact-menu {
+  color: #fff;
+  border-radius: 12px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.6), rgba(50, 50, 50, 0.6));
+}
+
+
+/* 切换按钮 */
+#toggle-btn {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+}
+#toggle-btn:hover {
+  background: var(--btn-bg-hover);
+}
+
+
+/* 联系人行 */
+.contact-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  gap: 10px;
+  transition: background 0.2s ease;
+}
+.contact-row:hover {
+  background: var(--hover-row);
+}
+
+.contact-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.contact-left .name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.contact-left .city {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.contact-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.contact-right .time {
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+.contact-right .diff {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* 删除按钮（SVG + 悬停放大） */
+.contact-right .del-btn {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  font-size: 12px;
+  margin-top: 4px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.contact-right .del-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+}
+.contact-row:hover .del-btn {
+  visibility: visible;
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* 选中联系人 */
+.contact-row.selected {
+  background: var(--selected-row);
+  box-shadow: inset 0 0 0 2px var(--selected-border);
+  border-radius: 8px;
+}
+
+/* 添加联系人面板 */
+.add-contact-menu {
+  background-color: var(--panel-plain-bg);
+  border: 1px solid var(--panel-plain-border);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  max-width: 320px;
+}
+
+.add-contact-menu input,
+.add-contact-menu button {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+/* 表单按钮 */
+.add-contact-menu button,
+.add-form button {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.add-contact-menu button:hover,
+.add-form button:hover {
+  background: var(--btn-bg-hover);
+}
+
+/* 选择器尺寸 */
+.add-form select {
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 统一表单元素的盒模型和宽度 */
+.add-form input,
+.add-form select,
+.add-form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  color: var(--text-primary);
+}
+
+/* 让行间距一致 */
+.add-form input,
+.add-form select,
+.add-form textarea,
+.add-form button {
+  margin-bottom: 10px;
+}
+
+/* 输入与下拉 */
+.add-form select, .add-form input { box-sizing: border-box; width: 100%; height: 36px; padding: 6px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 6px; background-color: #fff; color: #333; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+
+/* hover 和 focus 状态 */
+.add-form select:hover,
+.add-form input:hover {
+  border-color: var(--input-border-hover);
+}
+
+.add-form select:focus,
+.add-form input:focus {
+  border-color: var(--input-focus);
+  box-shadow: 0 0 3px color-mix(in oklab, var(--input-focus) 40%, transparent);
+}
+
+/* 美化下拉箭头 (兼容大多数浏览器) */
+.add-form select {
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23666" height="12" width="12" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  padding-right: 28px; /* 防止箭头挡文字 */
+}
